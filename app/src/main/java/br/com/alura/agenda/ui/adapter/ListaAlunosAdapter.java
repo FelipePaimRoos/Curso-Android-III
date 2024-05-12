@@ -11,13 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.alura.agenda.model.Aluno;
-import br.com.alura.agenda.ui.activity.ListaAlunosActivity;
 import missing.namespace.R;
 
 public class ListaAlunosAdapter extends BaseAdapter {
 
     private final List<Aluno> alunos = new ArrayList<>();
-    private Context context;
+    private final Context context;
 
     public ListaAlunosAdapter(Context context) {
         this.context = context;
@@ -40,25 +39,40 @@ public class ListaAlunosAdapter extends BaseAdapter {
 
     @Override
     public View getView(int posicao, View view, ViewGroup viewGroup) {
-        View viewCriada = LayoutInflater.from(context).inflate(R.layout.item_aluno, viewGroup, false);
+        View viewCriada = criarView(viewGroup);
         Aluno alunoDevolvido = alunos.get(posicao);
-        TextView nomeAluno = viewCriada.findViewById(R.id.item_aluno_nome);
-        nomeAluno.setText(alunoDevolvido.getNome());
-        TextView telefone = viewCriada.findViewById(R.id.item_aluno_telefone);
-        telefone.setText(alunoDevolvido.getTelefone());
+        vincula(alunoDevolvido, viewCriada);
         return viewCriada;
     }
 
+    private void vincula(Aluno aluno, View viewCriada) {
+        TextView nomeAluno = viewCriada.findViewById(R.id.item_aluno_nome);
+        nomeAluno.setText(aluno.getNome());
+        TextView telefone = viewCriada.findViewById(R.id.item_aluno_telefone);
+        telefone.setText(aluno.getTelefone());
+    }
 
-    public void clear() {
+    private View criarView(ViewGroup viewGroup) {
+        return LayoutInflater.from(context).inflate(R.layout.item_aluno, viewGroup, false);
+    }
+
+
+    private void clear() {
         alunos.clear();
     }
 
-    public void addAll(List<Aluno> todosAlunos) {
+    private void addAll(List<Aluno> todosAlunos) {
         this.alunos.addAll(todosAlunos);
     }
 
     public void remove(Aluno aluno) {
         alunos.remove(aluno);
+        notifyDataSetChanged();
+    }
+
+    public void atualiza(List<Aluno> alunos){
+        this.alunos.clear();
+        this.alunos.addAll(alunos);
+        notifyDataSetChanged();
     }
 }

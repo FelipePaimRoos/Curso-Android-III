@@ -19,18 +19,20 @@ import android.widget.ListView;
 
 import br.com.alura.agenda.dao.AlunoDAO;
 import br.com.alura.agenda.model.Aluno;
+import br.com.alura.agenda.ui.adapter.ListaAlunosAdapter;
 import missing.namespace.R;
 
 import static br.com.alura.agenda.ui.activity.ConstantesActivities.CHAVE_ALUNO;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ListaAlunosActivity extends AppCompatActivity {
 
     public static final String TITULO_APPBAR = "Lista de alunos";
     private final AlunoDAO dao = new AlunoDAO();
-    private ArrayAdapter<Aluno> adapter;
+    private ListaAlunosAdapter adapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,7 +59,7 @@ public class ListaAlunosActivity extends AppCompatActivity {
         if (itemId == R.id.activity_lista_alunos_menu_remover) {
             AdapterView.AdapterContextMenuInfo menuInfo =
                     (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-            Aluno alunoEscolhido = adapter.getItem(menuInfo.position);
+            Aluno alunoEscolhido =  adapter.getItem(menuInfo.position);
             remove(alunoEscolhido);
         }
 
@@ -118,31 +120,8 @@ public class ListaAlunosActivity extends AppCompatActivity {
     }
 
     private void configuraAdapter(ListView listaDeAlunos) {
-        adapter = new ArrayAdapter<>(
-                this, R.layout.item_aluno);
-        listaDeAlunos.setAdapter(new BaseAdapter() {
 
-            private final List<Aluno> alunos = new ArrayList<>();
-            @Override
-            public int getCount() {
-                return alunos.size();
-            }
-
-            @Override
-            public Aluno getItem(int posicao) {
-                return alunos.get(posicao);
-            }
-
-            @Override
-            public long getItemId(int posicao) {
-                return alunos.get(posicao).getId();
-            }
-
-            @Override
-            public View getView(int i, View view, ViewGroup viewGroup) {
-                View viewCriada = LayoutInflater.from(ListaAlunosActivity.this).inflate(R.layout.item_aluno, viewGroup);
-                return viewCriada;
-            }
-        });
+        adapter = new ListaAlunosAdapter(this);
+        listaDeAlunos.setAdapter(adapter);
     }
 }
